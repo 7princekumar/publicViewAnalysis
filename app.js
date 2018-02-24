@@ -5,6 +5,7 @@ var Twitter = require('twitter');
 var sentiment = require('sentiment');
 
 
+
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -24,7 +25,7 @@ app.set("view engine", "ejs");
 
 
 
-
+// ROUTES
 app.get("/", function(req, res){
    res.render("home");
 });
@@ -33,37 +34,39 @@ app.post("/", function(req, res){
     //get the string from the html
     var searchString = req.body.searchString;
     console.log("Search: "+searchString);
+    var minFollowersCount = 5;
+    var maxTweets = 5;
+    var tweetsCount = 0;
+    var totalScore  = 0;
     
-    
-    // //get the tweets
-    // client.stream('statuses/filter', {track: 'twitter'},  function(stream) {
-    //   stream.on('data', function(tweet) {
-    //     console.log(tweet.text);
-    //     count = count + 1;
-        
-    //   });
-    //   stream.on('error', function(error) {
-    //     console.log(error);
-    //   });
-    // });
-    
-    var totalScore = 0;
-    client.get('search/tweets', {q: searchString}, function(error, tweets, response) {
-        for(var i = 0; i< tweets.statuses.length; i++){
-            console.log("-------------------------------------");
-            console.log("TWEET ["+i+"]");
-            console.log("Tweet: "+tweets.statuses[i].text);
-            var r1 = sentiment(tweets.statuses[i].text);
-            console.log("Score: "+r1.score);
-            totalScore = totalScore + r1.score;
-        }
-        console.log("FINAL SCORE: "+searchString+": "+totalScore/tweets.statuses.length);
+    client.stream('statuses/filter', {track: searchString},  function(stream) {
+        stream.on('data', function(tweet) {
+            if(tweet.user.followers_count >= minFollowersCount){
+                
+                maxTweets--;
+                tweetsCount++;
+                var r1 = sentiment(tweet.text);
+                totalScore = totalScore + r1.score;
+                
+                console.log("-----------------------");
+                console.log("Tweet["+tweetsCount+"]: "+tweet.text);
+                console.log("User Followers: "+tweet.user.followers_count);
+                console.log("Score: "+r1.score);
+            }
+            if(maxTweets <= 0){
+                console.log("============");
+                console.log("Total Average Score: "+totalScore/tweetsCount);
+                stream.destroy();
+            }
+        });
+        stream.on('error', function(error) {
+            console.log(error);
+        });
     });
-
-    
     
     res.redirect("/");
 });
+
 
 app.get("/about", function(req, res){
    res.render("about");
@@ -75,7 +78,6 @@ app.get("/about", function(req, res){
 
 
 
- 
 
 
 
