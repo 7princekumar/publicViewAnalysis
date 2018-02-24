@@ -33,9 +33,18 @@ app.get("/", function(req, res){
 app.post("/", function(req, res){
     //get the string from the html
     var searchString = req.body.searchString;
-    console.log("Search: "+searchString);
     var minFollowersCount = 5;
     var maxTweets = 5;
+    if(req.body.maxTweets){
+        maxTweets = req.body.maxTweets;
+    }
+    if(req.body.tweetsCount){
+        tweetsCount = req.body.minFollowersCount;
+    }
+    
+    console.log("Search: "+searchString);
+    console.log("Minimum Followers Set to: "+minFollowersCount);
+    console.log("Maximum Tweets Set to: "+maxTweets);
     var tweetsCount = 0;
     var totalScore  = 0;
     
