@@ -42,6 +42,14 @@ app.post("/", function(req, res){
     var searchString = req.body.searchString;
     var minFollowersCount = 5; //default
     var maxTweets = 5; //default
+   
+    positiveScore = 0;
+    negativeScore = 0;
+    positiveTweetCount = 0;
+    negativeTweetCount = 0;
+    neutralCount = 0;
+    
+    
     if(req.body.maxTweets){
         maxTweets = req.body.maxTweets;
     }
