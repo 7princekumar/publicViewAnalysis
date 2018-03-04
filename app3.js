@@ -47,11 +47,11 @@ app.post("/", function(req, res){
       var tweets = data.statuses;
       for(var i=0; i<tweets.length; i++){
         var r1 = sentiment(tweets[i].text);
-        // console.log("---------------------");
-        // console.log("Tweet["+i+"]: "+tweets[i].text);
-        // console.log("User Followers: "+tweets[i].user.followers_count);
-        // console.log("Tweet Language: "+tweets[i].lang);
-        // console.log("Score: "+r1.score);
+        console.log("---------------------");
+        console.log("Tweet["+i+"]: "+tweets[i].text);
+        console.log("User Followers: "+tweets[i].user.followers_count);
+        console.log("Tweet Language: "+tweets[i].lang);
+        console.log("Score: "+r1.score);
       }
       // console.log(data)  -> will print the whole tweet json with all attributes.
     };
