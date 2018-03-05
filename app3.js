@@ -60,7 +60,6 @@ app.post("/", function(req, res){
 
     
     //WIKIPEDIA SCRAPING
-
     var query = searchString;
     // if you want to retrieve a full article set summaryOnly to false. 
     // Full article retrieval and parsing is still beta 
@@ -89,6 +88,6 @@ app.get("/show", function(req, res){
 });
 
 
-app.listen(8080, process.env.IP, function(){
+app.listen(process.env.PORT, process.env.IP, function(){
    console.log("Server Started!"); 
 });

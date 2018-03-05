@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var Twitter = require('twitter');
 var sentiment = require('sentiment');
+
 //const path       = require('path'); //provides utilities for working with file and directory paths
 
 var positiveScore = 0;
@@ -122,7 +123,7 @@ app.get("/show", function(req, res){
     console.log("Percentage Score: ");
     console.log("Positive Percentage: "+data.positiveTweetPercentage+"%");
     console.log("Negative Percentage: "+data.negativeTweetPercentage+"%");
-    console.log("Neutral Percentage: "+data.neutralTweetPercentage+"%");
+    console.log("Neutral Percentage:  "+data.neutralTweetPercentage+"%");
     res.render("show", data);
 });
 
