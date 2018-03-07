@@ -11,12 +11,18 @@ var wikiText = '';
 //Pusher
 const Pusher = require('pusher');
 var pusher = new Pusher({
-  appId: '487628',
-  key: 'b32865fd7b263aa0ec0f',
-  secret: '695a6b4b073498ed140b',
+  appId: process.env.APP_ID,
+  key: process.env.KEY,
+  secret: process.env.SECRET,
   cluster: 'ap2',
   encrypted: true
 });
+if(process.env.APP_ID && process.env.KEY && process.env.SECRET){
+    console.log("All Pusher Keys present.");
+} else {
+    console.log("Pusher Keys missing.");
+}
+
 
 
 //WIKI
@@ -135,28 +141,29 @@ app.post("/", function(req, res){
     });
     
     
-    // //CONTINUOUS MORE TWEETS////////////////
-    // var count = 0;
-    // var stream = T.stream('statuses/filter', { track: searchString, language: 'en' });
+    //CONTINUOUS MORE TWEETS////////////////
+    var count = 0;
+    var stream = T.stream('statuses/filter', { track: searchString, language: 'en' });
     
-    // stream.on('tweet', function (tweet) {
-    //   //when new tweet is fetched, trigger the puhser
-    //   // pusher.trigger('my-channel', 'my-event', {
-    //   //   "message": "hello world"
-    //   // });
+    stream.on('tweet', function (tweet) {
+      //when new tweet is fetched, trigger the pusher
+      pusher.trigger('my-channel', 'my-event', {
+        "message": "hello world",
+        "tweet": tweet
+      });
       
-    //   console.log("----------------------------");
-    //   console.log('RTT['+count+']: '+tweet.text);
-    //   count++;
-    //   if(count == 10){
-    //     stream.destroy();
-    //   }
-    // });
+      console.log("----------------------------");
+      console.log('RTT['+count+']: '+tweet.text);
+      count++;
+      // if(count == 10){
+      //   stream.destroy();
+      // }
+    });
     
     // // Disconnect stream after num_of_secs seconds 
     // var num_of_secs = 20;
     // setTimeout(stream.destroy, num_of_secs *1000);
-    // ////////////////////////////////////////////
+    ////////////////////////////////////////////
     
     res.redirect("/show");
 });

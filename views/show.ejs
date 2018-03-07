@@ -41,6 +41,11 @@
 		}
 		</script>
 		
+		
+		
+	  
+	  
+	  
 	</head>
 	<body>
 		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
@@ -49,13 +54,18 @@
 		<p>Positive Score: <%=scoreData.positiveScore%></p>
 		<p>Negative Score: <%=scoreData.negativeScore%></p>
 		
+		<!--SHOW WIKI TEXT-->
 		<p><%=scoreData.wikiText%></p>
 		<hr>
+		<!--SHOW TWEETS-->
 		<% for(var i=0; i<scoreData.tweetsArray.length; i++){ %>
 			<hr>
 			<p>Tweet[<%=i%>]: <%=scoreData.tweetsArray[i].text%></p>
 		<% } %>
 		
+		<div id="streamTweetsDiv">
+				<!--streamed tweets will be displayed here-->
+		</div>
 		
 		
 		<a href="/">Go to Home Page.</a>
@@ -64,7 +74,23 @@
 		
 		<!--<script src="https://js.pusher.com/4.2/pusher.min.js"></script>-->
 		<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-		<!--<script type="text/javascript" src="main.js"></script>-->
+		
+		
+		<script>
+	    // Enable pusher logging - don't include this in production
+	    Pusher.logToConsole = true;
+	    var pusher = new Pusher('b32865fd7b263aa0ec0f', {
+	      cluster: 'ap2',
+	      encrypted: true
+	    });
+	
+	    var channel = pusher.subscribe('my-channel');
+	    channel.bind('my-event', function(data) {
+	      // alert(data.tweet.text);
+	      var div = document.getElementById("streamTweetsDiv");
+				div.innerHTML += '<p>'+data.tweet.text+'</p>';
+	    });
+	  </script>
 		
 	</body>
 </html>
