@@ -2,6 +2,7 @@
 <html>
 	<h1>Show page.</h1>
 	<head>
+		<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 		<script>
 		window.onload = function () {
 		var chart = new CanvasJS.Chart("chartContainer", {
@@ -49,13 +50,21 @@
 		<p>Negative Score: <%=scoreData.negativeScore%></p>
 		
 		<p><%=scoreData.wikiText%></p>
+		<hr>
+		<% for(var i=0; i<scoreData.tweetsArray.length; i++){ %>
+			<hr>
+			<p>Tweet[<%=i%>]: <%=scoreData.tweetsArray[i].text%></p>
+		<% } %>
+		
 		
 		
 		<a href="/">Go to Home Page.</a>
 		
 		
 		
+		<!--<script src="https://js.pusher.com/4.2/pusher.min.js"></script>-->
 		<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 		<!--<script type="text/javascript" src="main.js"></script>-->
+		
 	</body>
 </html>

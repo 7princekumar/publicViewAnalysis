@@ -14,6 +14,7 @@
     "express": "^4.16.2",
     "html-to-text": "^3.3.0",
     "path": "^0.12.7",
+    "pusher": "^1.5.1",
     "sentiment": "^4.2.0",
     "twit": "^2.2.9",
     "twitter": "^1.7.1",

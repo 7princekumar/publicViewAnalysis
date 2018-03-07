@@ -4,7 +4,20 @@ var app = express();
 var bodyParser = require("body-parser");
 var sentiment = require('sentiment');
 var scoreData = {};
+var tweetsArray = [];
 var wikiText = '';
+
+
+//Pusher
+const Pusher = require('pusher');
+var pusher = new Pusher({
+  appId: '487628',
+  key: 'b32865fd7b263aa0ec0f',
+  secret: '695a6b4b073498ed140b',
+  cluster: 'ap2',
+  encrypted: true
+});
+
 
 //WIKI
 var wikipedia = require("wikipedia-js");
@@ -60,6 +73,7 @@ app.post("/", function(req, res){
       }
       
       var tweets = data.statuses;
+      tweetsArray = tweets;
       for(var i=0; i<tweets.length; i++){
         var r1 = sentiment(tweets[i].text);
         if(r1.score === 0){
@@ -121,17 +135,28 @@ app.post("/", function(req, res){
     });
     
     
-    // console.log("#########continuous more tweets######");
+    // //CONTINUOUS MORE TWEETS////////////////
     // var count = 0;
     // var stream = T.stream('statuses/filter', { track: searchString, language: 'en' });
+    
     // stream.on('tweet', function (tweet) {
-    //   console.log(tweet.text);
+    //   //when new tweet is fetched, trigger the puhser
+    //   // pusher.trigger('my-channel', 'my-event', {
+    //   //   "message": "hello world"
+    //   // });
+      
+    //   console.log("----------------------------");
+    //   console.log('RTT['+count+']: '+tweet.text);
     //   count++;
     //   if(count == 10){
     //     stream.destroy();
     //   }
     // });
     
+    // // Disconnect stream after num_of_secs seconds 
+    // var num_of_secs = 20;
+    // setTimeout(stream.destroy, num_of_secs *1000);
+    // ////////////////////////////////////////////
     
     res.redirect("/show");
 });
@@ -139,10 +164,9 @@ app.post("/", function(req, res){
 
 
 app.get("/show", function(req, res){
-    console.log(scoreData);
-    console.log("<<<<<<<<<<<<<<<<");
     scoreData.wikiText = wikiText;
-    console.log(wikiText);
+    scoreData.tweetsArray = tweetsArray;
+    // console.log(wikiText);
     res.render("show", {scoreData:scoreData});
 });
 
