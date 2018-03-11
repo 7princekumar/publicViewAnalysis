@@ -2,66 +2,99 @@
 <html>
 	<h1>Show page.</h1>
 	<head>
+		
 		<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 		<script>
-		window.onload = function () {
-		var chart = new CanvasJS.Chart("chartContainer", {
-			exportEnabled: true,
-			animationEnabled: true,
-			title:{
-				text: "Public View Analysis: "
-			},
-			legend:{
-				cursor: "pointer",
-				itemclick: explodePie
-			},
-			data: [{
-				type: "pie",
-				showInLegend: true,
-				toolTipContent: "{name}: <strong>{y}%</strong>",
-				indexLabel: "{name} - {y}%",
-				dataPoints: [
-					{ y: <%= (scoreData.positiveTweetCount * 100)/scoreData.maxTweets %>, name: "Positive", exploded: true },
-					{ y: <%= (scoreData.negativeTweetCount * 100)/scoreData.maxTweets %>, name: "Negative" },
-					{ y: <%= (scoreData.neutralCount * 100)/scoreData.maxTweets %>, 	  name: "Neutral" },
-				]
-			}]
-		});
-		chart.render();
-		}
-		
-		function explodePie (e) {
-			if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
-				e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
-			} else {
-				e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+			window.onload = function () {
+			var chart = new CanvasJS.Chart("chartContainer", {
+				exportEnabled: true,
+				animationEnabled: true,
+				title:{
+					text: "Public View Analysis: "
+				},
+				legend:{
+					cursor: "pointer",
+					itemclick: explodePie
+				},
+				data: [{
+					type: "pie",
+					showInLegend: true,
+					toolTipContent: "{name}: <strong>{y}%</strong>",
+					indexLabel: "{name} - {y}%",
+					dataPoints: [
+						{ y: <%= (twitterData.positiveTweetCount * 100)/twitterData.maxTweets %>, name: "Positive", exploded: true },
+						{ y: <%= (twitterData.negativeTweetCount * 100)/twitterData.maxTweets %>, name: "Negative" },
+						{ y: <%= (twitterData.neutralCount * 100)/twitterData.maxTweets %>, 	  name: "Neutral" },
+					]
+				}]
+			});
+			chart.render();
 			}
-			e.chart.render();
-		
-		}
+			
+			function explodePie (e) {
+				if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
+					e.dataSeries.dataPoints[e.dataPointIndex].exploded = true;
+				} else {
+					e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
+				}
+				e.chart.render();
+			
+			}
 		</script>
 		
-		
-		
-	  
-	  
-	  
 	</head>
+	
+	
+	
+	
 	<body>
 		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
 		
-		<p>Total Score: <%=scoreData.totalScore%></p>
-		<p>Positive Score: <%=scoreData.positiveScore%></p>
-		<p>Negative Score: <%=scoreData.negativeScore%></p>
+		<!--TWITTER SCORES-->
+		<p>TWITTER SCORES</p>
+		<p>Total Score: <%=twitterData.totalScore%></p>
+		<p>Positive Score: <%=twitterData.positiveScore%></p>
+		<p>Negative Score: <%=twitterData.negativeScore%></p>
+		
+		<!--REDDIT SCORE-->
+		<p>REDDIT SCORE</p>
+		<p>Total Score: <%=redditData.totalScore%></p>
+		<p>Positive Score: <%=redditData.positiveScore%></p>
+		<p>Negative Score: <%=redditData.negativeScore%></p>
+		
 		
 		<!--SHOW WIKI TEXT-->
-		<p><%=scoreData.wikiText%></p>
+		<p>WIKIPEDIA INFO</p>
+		<p><%=wikiData.wikiText%></p>
 		<hr>
-		<!--SHOW TWEETS-->
-		<% for(var i=0; i<scoreData.tweetsArray.length; i++){ %>
+		
+		<!--SHOW REDDIT POSTS-->
+		<p>REDDIT POSTS</p>
+		<hr>
+		<p>----RELEVENCE----</p>
+		<% for(var i=0; i<redditData.rr_PostsArray.length; i++){ %>
 			<hr>
-			<p>Tweet[<%=i%>]: <%=scoreData.tweetsArray[i].text%></p>
+			Sentiment Score: <%=redditData.rr_PostsArray[i].sentimentScore%> <br>
+			Reddit Score: <%=redditData.rr_PostsArray[i].redditScore%> 			 <br>
+			RR Post[<%=i%>]: <%=redditData.rr_PostsArray[i].title%>
 		<% } %>
+		<hr>
+		<p>----NEW----</p>
+		<% for(var i=0; i<redditData.rn_PostsArray.length; i++){ %>
+			<hr>
+			Sentiment Score: <%=redditData.rn_PostsArray[i].sentimentScore%> <br>
+			Reddit Score: <%=redditData.rn_PostsArray[i].redditScore%>       <br>
+			RN Post[<%=i%>]: <%=redditData.rn_PostsArray[i].title%>
+		<% } %>
+		
+		
+		<!--SHOW TWEETS-->
+		<p>TWEETS</p>
+		<% for(var i=0; i<twitterData.tweetsArray.length; i++){ %>
+			<hr>
+			<p>Tweet[<%=i%>]: <%=twitterData.tweetsArray[i].text%></p>
+		<% } %>
+		
 		
 		<div id="streamTweetsDiv">
 				<!--streamed tweets will be displayed here-->
@@ -79,6 +112,7 @@
 		<script>
 	    // Enable pusher logging - don't include this in production
 	    Pusher.logToConsole = true;
+	    var streamTweetCount = 0;
 	    var pusher = new Pusher('b32865fd7b263aa0ec0f', {
 	      cluster: 'ap2',
 	      encrypted: true
@@ -86,9 +120,10 @@
 	
 	    var channel = pusher.subscribe('my-channel');
 	    channel.bind('my-event', function(data) {
-	      // alert(data.tweet.text);
+	    	streamTweetCount++;
 	      var div = document.getElementById("streamTweetsDiv");
-				div.innerHTML += '<p>'+data.tweet.text+'</p>';
+				div.innerHTML += 'Streamed Tweet['+streamTweetCount+']: <br>';
+				div.innerHTML += data.tweet.text+'<hr>';
 	    });
 	  </script>
 		

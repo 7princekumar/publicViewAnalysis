@@ -3,7 +3,17 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var sentiment = require('sentiment');
-var scoreData = {};
+const fetch = require('node-fetch');
+
+var twitterData = {};
+var wikiData = {};
+var rr_LocalData = {};
+var rn_LocalData = {};
+var redditData = {};
+
+var rr_PostsArray = [];
+var rn_PostsArray = [];
+
 var tweetsArray = [];
 var wikiText = '';
 
@@ -106,7 +116,7 @@ app.post("/", function(req, res){
       console.log("Neutral Count: "+neutralCount);
       console.log("Total Average Score: "+totalScore/maxTweets);
       
-      scoreData = {
+      twitterData = {
         totalScore: totalScore,
         positiveScore: positiveScore,
         negativeScore: negativeScore,
@@ -165,16 +175,156 @@ app.post("/", function(req, res){
     // setTimeout(stream.destroy, num_of_secs *1000);
     ////////////////////////////////////////////
     
+    
+    
+    //REDDIT--------------------------------------------------------
+    //for relevence
+    var rr_positiveScore = 0;
+    var rr_negativeScore = 0;
+    var rr_positivePostCount = 0;
+    var rr_negativePostCount = 0;
+    var rr_neutralPostCount = 0;
+    var rr_totalScore = 0;
+    //for new
+    var rn_positiveScore = 0;
+    var rn_negativeScore = 0;
+    var rn_positivePostCount = 0;
+    var rn_negativePostCount = 0;
+    var rn_neutralPostCount = 0;
+    var rn_totalScore = 0;
+    
+    var r_maxPosts = 5; //100 max
+    
+    var reddit = {
+      search: function(searchTerm, r_maxPosts, sortBy) {
+        return fetch(
+          `http://www.reddit.com/search.json?q=${searchTerm}&sort=${sortBy}&limit=${r_maxPosts}`
+        )
+          .then(res => res.json())
+          .then(data => {
+            return data.data.children.map(data => data.data);
+          })
+          .catch(err => console.log(err));
+      }
+    };
+    
+    //RR
+    var sortBy = 'relevence';
+    reddit.search(searchString, r_maxPosts, sortBy).then(results => {
+      // redditData.relevenceResults = results;
+      for(var i=0; i<results.length; i++){
+        console.log("--------RELEVENCE---------");
+        
+        var r2 = sentiment(results[i].title);
+        if(r2.score === 0){
+            rr_neutralPostCount++;
+        } else if(r2.score > 0) {
+            rr_positivePostCount++;
+            rr_positiveScore += r2.score;
+        } else {
+            rr_negativePostCount++;
+            rr_negativeScore += r2.score;
+        }
+        rr_totalScore += r2.score;
+        
+        var post = {
+          title: results[i].title,
+          redditScore: results[i].score,
+          sentimentScore: r2.score
+        };
+        rr_PostsArray.push(post);
+        
+        console.log("Post["+i+"]: Reddit Score: "+results[i].score);
+        console.log("Title: "+results[i].title);
+        // console.log("Self Text: "+results[i].selftext);
+        // console.log("Subreddit: "+results[i].subreddit);
+        
+        
+        rr_LocalData = {
+          totalScore:        rr_totalScore,
+          positiveScore:     rr_positiveScore,
+          negativeScore:     rr_negativeScore,
+          positivePostCount: rr_positivePostCount,
+          negativePostCount: rr_negativePostCount,
+          neutralPostCount:  rr_neutralPostCount,
+          maxPosts:          r_maxPosts
+        };
+      
+      }
+    });
+    
+    //RN
+    var sortBy = 'new';
+    reddit.search(searchString, r_maxPosts, sortBy).then(results => {
+      // redditData.newResults = results;
+      for(var i=0; i<results.length; i++){
+        console.log("--------NEW---------");
+        
+        var r3 = sentiment(results[i].title);
+        if(r3.score === 0){
+            rn_neutralPostCount++;
+        } else if(r3.score > 0) {
+            rn_positivePostCount++;
+            rn_positiveScore += r3.score;
+        } else {
+            rn_negativePostCount++;
+            rn_negativeScore += r3.score;
+        }
+        rn_totalScore += r3.score;
+        
+        var post = {
+          title: results[i].title,
+          redditScore: results[i].score,
+          sentimentScore: r3.score
+        };
+        rn_PostsArray.push(post);
+        
+        console.log("Post["+i+"]: Reddit Score: "+results[i].score);
+        console.log("Title: "+results[i].title);
+        // console.log("Self Text: "+results[i].selftext);
+        //console.log("Subreddit: "+results[i].subreddit);
+        
+        
+        rn_LocalData = {
+          totalScore:        rn_totalScore,
+          positiveScore:     rn_positiveScore,
+          negativeScore:     rn_negativeScore,
+          positivePostCount: rn_positivePostCount,
+          negativePostCount: rn_negativePostCount,
+          neutralPostCount:  rn_neutralPostCount,
+          maxPosts:          r_maxPosts
+        };
+        
+      }
+    });
+    
     res.redirect("/show");
 });
 
 
 
 app.get("/show", function(req, res){
-    scoreData.wikiText = wikiText;
-    scoreData.tweetsArray = tweetsArray;
-    // console.log(wikiText);
-    res.render("show", {scoreData:scoreData});
+    wikiData.wikiText = wikiText;
+    twitterData.tweetsArray = tweetsArray;
+    redditData = {
+      totalScore:        rr_LocalData.totalScore +        rn_LocalData.totalScore,
+      positiveScore:     rr_LocalData.positiveScore +     rn_LocalData.positiveScore ,
+      negativeScore:     rr_LocalData.negativeScore +     rn_LocalData.negativeScore,
+      positivePostCount: rr_LocalData.positivePostCount + rn_LocalData.positivePostCount,
+      negativePostCount: rr_LocalData.negativePostCount + rn_LocalData.negativePostCount,
+      neutralPostCount:  rr_LocalData.neutralPostCount +  rn_LocalData.neutralPostCount,
+      maxPosts:          rr_LocalData.maxPosts,
+      rr_PostsArray:     rr_PostsArray,
+      rn_PostsArray:     rn_PostsArray
+    }
+    // console.log("RD-----");
+    // console.log(redditData);
+    
+    res.render("show", {
+      twitterData: twitterData, 
+      wikiData:    wikiData, 
+      redditData:  redditData,
+    });
 });
 
 

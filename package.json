@@ -13,6 +13,7 @@
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "html-to-text": "^3.3.0",
+    "node-fetch": "^2.1.1",
     "path": "^0.12.7",
     "pusher": "^1.5.1",
     "sentiment": "^4.2.0",
