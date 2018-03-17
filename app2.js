@@ -18,7 +18,7 @@ var tweetsArray = [];
 var wikiText = '';
 
 
-//Pusher
+//Pusher config
 const Pusher = require('pusher');
 var pusher = new Pusher({
   appId: process.env.APP_ID,
@@ -156,10 +156,15 @@ app.post("/", function(req, res){
     var stream = T.stream('statuses/filter', { track: searchString, language: 'en' });
     
     stream.on('tweet', function (tweet) {
+      //calculate score for this tweet
+      var r5 = sentiment(tweet.text);
+      
+      
       //when new tweet is fetched, trigger the pusher
       pusher.trigger('my-channel', 'my-event', {
         "message": "hello world",
-        "tweet": tweet
+        "tweet": tweet,
+        "score": r5.score
       });
       
       console.log("----------------------------");

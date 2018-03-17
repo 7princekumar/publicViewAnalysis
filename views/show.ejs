@@ -6,29 +6,70 @@
 		<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 		<script>
 			window.onload = function () {
-			var chart = new CanvasJS.Chart("chartContainer", {
-				exportEnabled: true,
-				animationEnabled: true,
-				title:{
-					text: "Public View Analysis: "
-				},
-				legend:{
-					cursor: "pointer",
-					itemclick: explodePie
-				},
-				data: [{
-					type: "pie",
-					showInLegend: true,
-					toolTipContent: "{name}: <strong>{y}%</strong>",
-					indexLabel: "{name} - {y}%",
-					dataPoints: [
-						{ y: <%= (twitterData.positiveTweetCount * 100)/twitterData.maxTweets %>, name: "Positive", exploded: true },
-						{ y: <%= (twitterData.negativeTweetCount * 100)/twitterData.maxTweets %>, name: "Negative" },
-						{ y: <%= (twitterData.neutralCount * 100)/twitterData.maxTweets %>, 	  name: "Neutral" },
-					]
-				}]
-			});
-			chart.render();
+			
+			
+				var newScore = 0;
+				var T_maxTweets 				 = <%= twitterData.maxTweets %>
+	    	var T_neutralCount 			 = <%= twitterData.neutralCount %>
+	    	var T_positiveTweetCount = <%= twitterData.positiveTweetCount%>
+	    	var T_negativeTweetCount = <%= twitterData.negativeTweetCount %>
+	    	
+					
+					
+				var chart = new CanvasJS.Chart("chartContainer", {
+					exportEnabled: true,
+					animationEnabled: true,
+					title:{
+						text: "Public View Analysis: "
+					},
+					legend:{
+						cursor: "pointer",
+						itemclick: explodePie
+					},
+					data: [{
+						type: "pie",
+						showInLegend: true,
+						toolTipContent: "{name}: <strong>{y}%</strong>",
+						indexLabel: "{name} - {y}%",
+						dataPoints: [
+							{ y: (T_positiveTweetCount * 100)/T_maxTweets , name: "Positive", exploded: true },
+							{ y: (T_negativeTweetCount * 100)/T_maxTweets , name: "Negative" },
+							{ y: (T_neutralCount * 100)/T_maxTweets , 	  name: "Neutral" },
+						]
+					}]
+				});
+				chart.render();
+				
+				var pusher = new Pusher('b32865fd7b263aa0ec0f', {
+		      cluster: 'ap2',
+		      encrypted: true
+		    });
+				var channel = pusher.subscribe('my-channel');
+		    channel.bind('my-event', function(data) {
+		    	newScore = data.score;
+		    	console.log("GOT NEW SCORE: "+data.score);
+		    	
+		    	//UPDATE VALUES
+		    	//increase total tweet count
+					T_maxTweets += 1;
+					console.log("Max Tweets: "+T_maxTweets);
+					//update other counts
+					if(newScore == 0){
+						T_neutralCount += 1;
+					} else if(newScore > 0) {
+						T_positiveTweetCount += 1;
+					} else {
+						T_negativeTweetCount += 1;
+					}
+					
+					//update chart
+					chart.options.data[0].dataPoints[0].y = (T_positiveTweetCount * 100)/T_maxTweets; 
+					chart.options.data[0].dataPoints[1].y = (T_negativeTweetCount * 100)/T_maxTweets; 
+					chart.options.data[0].dataPoints[2].y = (T_neutralCount * 100)/T_maxTweets;
+					chart.render();
+		    });
+		    
+		    
 			}
 			
 			function explodePie (e) {
@@ -109,9 +150,9 @@
 		<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 		
 		
+		<!--PUSHER-TWITTER(live-stream)-->
 		<script>
-	    // Enable pusher logging - don't include this in production
-	    Pusher.logToConsole = true;
+	    // Pusher.logToConsole = true; // Enable pusher logging - don't include this in production
 	    var streamTweetCount = 0;
 	    var pusher = new Pusher('b32865fd7b263aa0ec0f', {
 	      cluster: 'ap2',
@@ -123,7 +164,9 @@
 	    	streamTweetCount++;
 	      var div = document.getElementById("streamTweetsDiv");
 				div.innerHTML += 'Streamed Tweet['+streamTweetCount+']: <br>';
+				div.innerHTML += 'Score: '+data.score+'<br>';
 				div.innerHTML += data.tweet.text+'<hr>';
+				
 	    });
 	  </script>
 		
