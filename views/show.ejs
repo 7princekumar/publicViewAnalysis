@@ -7,20 +7,18 @@
 		<script>
 			window.onload = function () {
 			
-			
+				//---------- TWITTER CHART -------------
 				var newScore = 0;
 				var T_maxTweets 				 = <%= twitterData.maxTweets %>
 	    	var T_neutralCount 			 = <%= twitterData.neutralCount %>
 	    	var T_positiveTweetCount = <%= twitterData.positiveTweetCount%>
 	    	var T_negativeTweetCount = <%= twitterData.negativeTweetCount %>
-	    	
 					
-					
-				var chart = new CanvasJS.Chart("chartContainer", {
+				var twitterChart = new CanvasJS.Chart("chartContainer", {
 					exportEnabled: true,
 					animationEnabled: true,
 					title:{
-						text: "Public View Analysis: "
+						text: "Public View Analysis: Twitter"
 					},
 					legend:{
 						cursor: "pointer",
@@ -38,8 +36,9 @@
 						]
 					}]
 				});
-				chart.render();
+				twitterChart.render();
 				
+				// --------PUSHER START- TWITTER ----------
 				var pusher = new Pusher('b32865fd7b263aa0ec0f', {
 		      cluster: 'ap2',
 		      encrypted: true
@@ -63,13 +62,42 @@
 					}
 					
 					//update chart
-					chart.options.data[0].dataPoints[0].y = (T_positiveTweetCount * 100)/T_maxTweets; 
-					chart.options.data[0].dataPoints[1].y = (T_negativeTweetCount * 100)/T_maxTweets; 
-					chart.options.data[0].dataPoints[2].y = (T_neutralCount * 100)/T_maxTweets;
-					chart.render();
+					twitterChart.options.data[0].dataPoints[0].y = (T_positiveTweetCount * 100)/T_maxTweets; 
+					twitterChart.options.data[0].dataPoints[1].y = (T_negativeTweetCount * 100)/T_maxTweets; 
+					twitterChart.options.data[0].dataPoints[2].y = (T_neutralCount * 100)/T_maxTweets;
+					twitterChart.render();
 		    });
+		    //------------ PUSHER END-TWITTER ------------
 		    
-		    
+		    //---------------------REDDIT CHART------------------------
+		    var R_maxPosts				  = <%= redditData.maxPosts * 2 %>
+	    	var R_neutralPostCount 	= <%= redditData.neutralPostCount %>
+	    	var R_positivePostCount = <%= redditData.positivePostCount%>
+	    	var R_negativePostCount = <%= redditData.negativePostCount %>
+	    	
+		    var redditChart = new CanvasJS.Chart("chartContainerReddit", {
+					exportEnabled: true,
+					animationEnabled: true,
+					title:{
+						text: "Public View Analysis: Reddit"
+					},
+					legend:{
+						cursor: "pointer",
+						itemclick: explodePie
+					},
+					data: [{
+						type: "pie",
+						showInLegend: true,
+						toolTipContent: "{name}: <strong>{y}%</strong>",
+						indexLabel: "{name} - {y}%",
+						dataPoints: [
+							{ y: (R_positivePostCount * 100)/R_maxPosts , name: "Positive", exploded: true },
+							{ y: (R_negativePostCount * 100)/R_maxPosts , name: "Negative" },
+							{ y: (R_neutralPostCount  * 100)/R_maxPosts , name: "Neutral" },
+						]
+					}]
+				});
+				redditChart.render();
 			}
 			
 			function explodePie (e) {
@@ -79,7 +107,6 @@
 					e.dataSeries.dataPoints[e.dataPointIndex].exploded = false;
 				}
 				e.chart.render();
-			
 			}
 		</script>
 		
@@ -90,16 +117,17 @@
 	
 	<body>
 		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+		<div id="chartContainerReddit" style="height: 300px; width: 100%;"></div>
 		
 		<!--TWITTER SCORES-->
 		<p>TWITTER SCORES</p>
-		<p>Total Score: <%=twitterData.totalScore%></p>
+		<p>Total Score: 	 <%=twitterData.totalScore%></p>
 		<p>Positive Score: <%=twitterData.positiveScore%></p>
 		<p>Negative Score: <%=twitterData.negativeScore%></p>
 		
 		<!--REDDIT SCORE-->
 		<p>REDDIT SCORE</p>
-		<p>Total Score: <%=redditData.totalScore%></p>
+		<p>Total Score: 	 <%=redditData.totalScore%></p>
 		<p>Positive Score: <%=redditData.positiveScore%></p>
 		<p>Negative Score: <%=redditData.negativeScore%></p>
 		
@@ -129,7 +157,7 @@
 		<% } %>
 		
 		
-		<!--SHOW TWEETS-->
+		<!--SHOW STATIC TWEETS-->
 		<p>TWEETS</p>
 		<% for(var i=0; i<twitterData.tweetsArray.length; i++){ %>
 			<hr>
@@ -137,6 +165,7 @@
 		<% } %>
 		
 		
+		<!--SHOW DYNAMIC TWEETS-->
 		<div id="streamTweetsDiv">
 				<!--streamed tweets will be displayed here-->
 		</div>
