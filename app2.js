@@ -4,6 +4,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var sentiment = require('sentiment');
 const fetch = require('node-fetch');
+const request = require('request');
 
 var twitterData = {};
 var wikiData = {};
@@ -21,10 +22,10 @@ var wikiText = '';
 //Pusher config
 const Pusher = require('pusher');
 var pusher = new Pusher({
-  appId: process.env.APP_ID,
-  key: process.env.KEY,
-  secret: process.env.SECRET,
-  cluster: 'ap2',
+  appId:    process.env.APP_ID,
+  key:      process.env.KEY,
+  secret:   process.env.SECRET,
+  cluster:  'ap2',
   encrypted: true
 });
 if(process.env.APP_ID && process.env.KEY && process.env.SECRET){
@@ -45,6 +46,8 @@ var htmlToText = require('html-to-text');
 var Twit = require("twit");
 var config = require('./config');
 var T = new Twit(config);
+
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -301,7 +304,26 @@ app.post("/", function(req, res){
         };
         
       }
+    });  //reddit search
+    
+    
+    
+    //GOOGLE PLUS
+    request({
+      url: `https://www.googleapis.com/plus/v1/activities?query=${searchString}&maxResults=20&key=${process.env.GOOGLE_KEY}`,
+      json: true
+    }, function(err, res, body){
+      if(err){
+        console.log("Error in fetching Google Plus Activies!");
+      }else{
+        console.log("+++++++++GOOGLE Plus Activies++++++++++");
+        for(var i=0; i<body.items.length; i++){
+          console.log("Title["+i+"]: "+body.items[i].title);
+        }
+      }
     });
+    
+   
     
     res.redirect("/show");
 });
