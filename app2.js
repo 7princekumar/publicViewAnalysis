@@ -400,7 +400,7 @@ app.get("/show", function(req, res){
       maxPosts:          rr_LocalData.maxPosts,
       rr_PostsArray:     rr_PostsArray,
       rn_PostsArray:     rn_PostsArray
-    }
+    };
     
     res.render("show", {
       twitterData: twitterData, 

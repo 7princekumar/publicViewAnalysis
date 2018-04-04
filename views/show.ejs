@@ -144,7 +144,7 @@
 		<% for(var i=0; i<redditData.rr_PostsArray.length; i++){ %>
 			<hr>
 			Sentiment Score: <%=redditData.rr_PostsArray[i].sentimentScore%> <br>
-			Reddit Score: <%=redditData.rr_PostsArray[i].redditScore%> 			 <br>
+			Reddit Score:    <%=redditData.rr_PostsArray[i].redditScore%> 	 <br>
 			RR Post[<%=i%>]: <%=redditData.rr_PostsArray[i].title%>
 		<% } %>
 		<hr>
@@ -152,9 +152,22 @@
 		<% for(var i=0; i<redditData.rn_PostsArray.length; i++){ %>
 			<hr>
 			Sentiment Score: <%=redditData.rn_PostsArray[i].sentimentScore%> <br>
-			Reddit Score: <%=redditData.rn_PostsArray[i].redditScore%>       <br>
+			Reddit Score:    <%=redditData.rn_PostsArray[i].redditScore%>    <br>
 			RN Post[<%=i%>]: <%=redditData.rn_PostsArray[i].title%>
 		<% } %>
+		
+		
+		<!--SHOW GOOGLE ACTIVITIES-->
+		<hr>
+		<p>GOOGLE ACTIVITIES</p>
+		<hr>
+		<% for(var i=0; i<googleData.g_ActivitiesArray.length; i++){ %>
+			Sentiment Score: <%=googleData.g_ActivitiesArray[i].sentimentScore%> <br>
+			g_Activity[<%=i%>]: <%=googleData.g_ActivitiesArray[i].title%>
+			<hr>
+		<% } %>
+		
+		
 		
 		
 		<!--SHOW STATIC TWEETS-->
