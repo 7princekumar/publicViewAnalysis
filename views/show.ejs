@@ -14,7 +14,7 @@
 	    	var T_positiveTweetCount = <%= twitterData.positiveTweetCount%>
 	    	var T_negativeTweetCount = <%= twitterData.negativeTweetCount %>
 					
-				var twitterChart = new CanvasJS.Chart("chartContainer", {
+				var twitterChart = new CanvasJS.Chart("chartContainerTwitter", {
 					exportEnabled: true,
 					animationEnabled: true,
 					title:{
@@ -98,7 +98,41 @@
 					}]
 				});
 				redditChart.render();
+			
+			
+			
+			//---------------------GOOGLE CHART------------------------
+		    var G_maxActivities				  = <%= googleData.maxActivities %>
+	    	var G_neutralActivityCount 	= <%= googleData.neutralActivityCount %>
+	    	var G_positiveActivityCount = <%= googleData.positiveActivityCount%>
+	    	var G_negativeActivityCount = <%= googleData.negativeActivityCount %>
+	    	
+		    var googleChart = new CanvasJS.Chart("chartContainerGoogle", {
+					exportEnabled: true,
+					animationEnabled: true,
+					title:{
+						text: "Public View Analysis: Google Plus"
+					},
+					legend:{
+						cursor: "pointer",
+						itemclick: explodePie
+					},
+					data: [{
+						type: "pie",
+						showInLegend: true,
+						toolTipContent: "{name}: <strong>{y}%</strong>",
+						indexLabel: "{name} - {y}%",
+						dataPoints: [
+							{ y: (G_positiveActivityCount * 100)/G_maxActivities , name: "Positive", exploded: true },
+							{ y: (G_negativeActivityCount * 100)/G_maxActivities , name: "Negative" },
+							{ y: (G_neutralActivityCount  * 100)/G_maxActivities , name: "Neutral" },
+						]
+					}]
+				});
+				googleChart.render();
 			}
+			
+			
 			
 			function explodePie (e) {
 				if(typeof (e.dataSeries.dataPoints[e.dataPointIndex].exploded) === "undefined" || !e.dataSeries.dataPoints[e.dataPointIndex].exploded) {
@@ -116,8 +150,9 @@
 	
 	
 	<body>
-		<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+		<div id="chartContainerTwitter" style="height: 300px; width: 100%;"></div>
 		<div id="chartContainerReddit" style="height: 300px; width: 100%;"></div>
+		<div id="chartContainerGoogle" style="height: 300px; width: 100%;"></div>
 		
 		<!--TWITTER SCORES-->
 		<p>TWITTER SCORES</p>
@@ -130,6 +165,12 @@
 		<p>Total Score: 	 <%=redditData.totalScore%></p>
 		<p>Positive Score: <%=redditData.positiveScore%></p>
 		<p>Negative Score: <%=redditData.negativeScore%></p>
+		
+		<!--GOOGLE SCORE-->
+		<p>GOOGLE SCORE</p>
+		<p>Total Score: 	 <%=googleData.totalScore%></p>
+		<p>Positive Score: <%=googleData.positiveScore%></p>
+		<p>Negative Score: <%=googleData.negativeScore%></p>
 		
 		
 		<!--SHOW WIKI TEXT-->
@@ -161,9 +202,9 @@
 		<hr>
 		<p>GOOGLE ACTIVITIES</p>
 		<hr>
-		<% for(var i=0; i<googleData.g_ActivitiesArray.length; i++){ %>
-			Sentiment Score: <%=googleData.g_ActivitiesArray[i].sentimentScore%> <br>
-			g_Activity[<%=i%>]: <%=googleData.g_ActivitiesArray[i].title%>
+		<% for(var i=0; i<googleData.activitiesArray.length; i++){ %>
+			Sentiment Score: <%=googleData.activitiesArray[i].sentimentScore%> <br>
+			g_Activity[<%=i%>]: <%=googleData.activitiesArray[i].title%>
 			<hr>
 		<% } %>
 		

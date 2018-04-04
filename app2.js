@@ -366,13 +366,13 @@ app.post("/", function(req, res){
             
             
             googleData = {
-              totalScore:        g_totalScore,
-              positiveScore:     g_positiveScore,
-              negativeScore:     g_negativeScore,
-              positivePostCount: g_positiveActivityCount,
-              negativePostCount: g_negativeActivityCount,
-              neutralPostCount:  g_neutralActivityCount,
-              maxPosts:          g_ActivitiesCount
+              totalScore:            g_totalScore,
+              positiveScore:         g_positiveScore,
+              negativeScore:         g_negativeScore,
+              positiveActivityCount: g_positiveActivityCount,
+              negativeActivityCount: g_negativeActivityCount,
+              neutralActivityCount:  g_neutralActivityCount,
+              maxActivities:         g_ActivitiesCount
             };
           
           }
@@ -389,7 +389,7 @@ app.post("/", function(req, res){
 app.get("/show", function(req, res){
     wikiData.wikiText = wikiText;
     twitterData.tweetsArray = tweetsArray;
-    googleData.g_ActivitiesArray = g_ActivitiesArray;
+    googleData.activitiesArray = g_ActivitiesArray;
     redditData = {
       totalScore:        rr_LocalData.totalScore +        rn_LocalData.totalScore,
       positiveScore:     rr_LocalData.positiveScore +     rn_LocalData.positiveScore ,
