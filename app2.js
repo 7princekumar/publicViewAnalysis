@@ -14,9 +14,11 @@ var redditData = {};
 
 var rr_PostsArray = [];
 var rn_PostsArray = [];
-
 var tweetsArray = [];
+var g_ActivitiesArray = [];
+
 var wikiText = '';
+var googleData = {};
 
 
 //Pusher config
@@ -29,9 +31,14 @@ var pusher = new Pusher({
   encrypted: true
 });
 if(process.env.APP_ID && process.env.KEY && process.env.SECRET){
-    console.log("All Pusher Keys present.");
+  console.log("All Pusher Keys present.");
 } else {
-    console.log("Pusher Keys missing.");
+ console.log("Pusher Keys missing.");
+}
+if(process.env.GOOGLE_KEY){
+  console.log("Google Key is present.");
+} else {
+  console.log("Google Key is missing.");
 }
 
 
@@ -309,17 +316,66 @@ app.post("/", function(req, res){
     
     
     //GOOGLE PLUS
+    var g_positiveScore = 0;
+    var g_negativeScore = 0;
+    var g_positiveActivityCount = 0;
+    var g_negativeActivityCount = 0;
+    var g_neutralActivityCount = 0;
+    var g_totalScore = 0;
+    var g_maxActivities = 20; //20 is max.
+    var g_ActivitiesCount = 0;
+    
     request({
-      url: `https://www.googleapis.com/plus/v1/activities?query=${searchString}&maxResults=20&key=${process.env.GOOGLE_KEY}`,
+      url: `https://www.googleapis.com/plus/v1/activities?query=${searchString}&maxResults=${g_maxActivities}&key=${process.env.GOOGLE_KEY}`,
       json: true
-    }, function(err, res, body){
-      if(err){
-        console.log("Error in fetching Google Plus Activies!");
-      }else{
-        console.log("+++++++++GOOGLE Plus Activies++++++++++");
-        for(var i=0; i<body.items.length; i++){
-          console.log("Title["+i+"]: "+body.items[i].title);
-        }
+    },function(err, res, body){
+        if(err){
+          console.log("Error in fetching Google Plus Activies!");
+        }else{
+          console.log("+++++++++GOOGLE Plus Activies++++++++++");  
+          for(var i=0; i<body.items.length; i++){
+            console.log("*****************ACTIVITY CONTENT***********");
+            
+            var acitivityContent = body.items[i].title + body.items[i].object.content;
+            var r4 = sentiment(acitivityContent);
+            if(r4.score === 0){
+                g_neutralActivityCount++;
+            } else if(r4.score > 0) {
+                g_positiveActivityCount++;
+                g_positiveScore += r4.score;
+            } else {
+                g_negativeActivityCount++;
+                g_negativeScore += r4.score;
+            }
+            g_totalScore += r4.score;
+            
+            var activity = {
+              title: body.items[i].title,
+              content: body.items[i].object.content,
+              sentimentScore: r4.score
+            };
+            
+            if( (body.items[i].title.length > 0) && (acitivityContent.length > 0)){
+              g_ActivitiesCount++;
+              g_ActivitiesArray.push(activity);
+              console.log("Activity["+i+"]: Sentiment Score: "+r4.score);
+              console.log("Title: "+body.items[i].title);
+              console.log("ActivityCount: "+g_ActivitiesCount);
+            }
+            // console.log("Content: "+body.items[i].object.content);
+            
+            
+            googleData = {
+              totalScore:        g_totalScore,
+              positiveScore:     g_positiveScore,
+              negativeScore:     g_negativeScore,
+              positivePostCount: g_positiveActivityCount,
+              negativePostCount: g_negativeActivityCount,
+              neutralPostCount:  g_neutralActivityCount,
+              maxPosts:          g_ActivitiesCount
+            };
+          
+          }
       }
     });
     
@@ -333,6 +389,7 @@ app.post("/", function(req, res){
 app.get("/show", function(req, res){
     wikiData.wikiText = wikiText;
     twitterData.tweetsArray = tweetsArray;
+    googleData.g_ActivitiesArray = g_ActivitiesArray;
     redditData = {
       totalScore:        rr_LocalData.totalScore +        rn_LocalData.totalScore,
       positiveScore:     rr_LocalData.positiveScore +     rn_LocalData.positiveScore ,
@@ -344,13 +401,12 @@ app.get("/show", function(req, res){
       rr_PostsArray:     rr_PostsArray,
       rn_PostsArray:     rn_PostsArray
     }
-    // console.log("RD-----");
-    // console.log(redditData);
     
     res.render("show", {
       twitterData: twitterData, 
       wikiData:    wikiData, 
       redditData:  redditData,
+      googleData:  googleData
     });
 });
 
