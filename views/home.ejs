@@ -1,24 +1,108 @@
-<h1>Home Page.</h1>
+<html>
+  <head>
+    <title>Public View Analysis</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/css/mdb.min.css" rel="stylesheet">
+    
+    <!--own css-->
+    <style>
+      .card{
+        width: 27rem;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30px;
+      }
+      
+      
+      .inputDIV {
+        margin-bottom: 7.5px;
+      }
+      
+      label {
+        margin-bottom: 0;
+      }
+      
+    </style>
 
-<form action="/" method="post">
-    <div>
-        <label for="searchString">Name</label> <br>
-        <input type="text" name="searchString" id="searchString" placeholder="search">
-    </div>
-    <div>
-        <label for="minFollowersCount">Minimum Followers Count</label> <br>
-        <input type="number" 
-               name="minFollowersCount" 
-               id="minFollowersCount" 
-               placeholder="min followers" 
-               min="0">
-    </div>
+  </head>
+  <body>
+    
+    <h1>Home Page.</h1>
+    <div class="container">
+      
+      
+      
+      
+      
+      <!--Card-->
+      <div class="card">
+      
+          <!--Card image-->
+          <img class="img-fluid center-cropped" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+      
+          <!--Card content-->
+          <div class="card-body">
+              <!--Title-->
+              <h4 class="card-title">Public View Analysis</h4>
+              <!--Text-->
+              <p class="card-text">
+                A complete real-time analysis of public opinions (via Twitter, Reddit and Google+) over any topic instantly.
+              </p>
+              
+              <form action="/" method="post">
+                <div class='inputDIV'>
+                    <label for="searchString">Name</label> <br>
+                    <input type="text" class="form-control" name="searchString" id="searchString" placeholder="search">
+                </div>
+                <!--<div class='inputDIV'>-->
+                <!--    <label for="minFollowersCount">Minimum Followers Count</label> <br>-->
+                <!--    <input type="number" -->
+                <!--           class="form-control"-->
+                <!--           name="minFollowersCount" -->
+                <!--           id="minFollowersCount" -->
+                <!--           placeholder="min followers" -->
+                <!--           min="0">-->
+                <!--</div>-->
+                <div class='inputDIV'>
+                    <label for="maxTweets">Maximum No Of Tweets</label> <br>
+                    <input type="number" class="form-control" name="maxTweets" id="maxTweets" placeholder="max tweets count">
+                </div>
+                <button class="btn btn-primary ">Submit</button>
+              </form>
+              
+              
+              
+          </div>
+      
+      </div>
+      <!--/.Card-->
+      
+      
+      
+      
+    </div> <!--container-->
+    
+    
+    
+    
+    
+    
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+                
+  </body>
+</html>
 
-    <div>
-        <label for="maxTweets">Maximum No Of Tweets</label> <br>
-        <input type="number" name="maxTweets" id="maxTweets" placeholder="max tweets count">
-    </div>
-    <button>Submit</button>
-</form>
 
 
