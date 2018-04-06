@@ -1,7 +1,34 @@
 <!DOCTYPE HTML>
 <html>
-	<h1>Show page.</h1>
 	<head>
+		<title>Public View Analysis</title>
+		
+		<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/css/mdb.min.css" rel="stylesheet">
+		<!--own css-->
+    <style>
+    	.redditBOX {
+    		background-color: #FFE0B2;
+    	}
+    	
+    	.googleBOX {
+    		background-color: #F5F5F5;
+    	}
+    	
+    	.reddit-google-content {
+    		font-size: 13px;
+    	}
+    	
+    	.twitterBOX {
+    		background-color: #BBDEFB;
+    	}
+    	
+    </style>
+		
 		
 		<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 		<script>
@@ -18,7 +45,7 @@
 					exportEnabled: true,
 					animationEnabled: true,
 					title:{
-						text: "Public View Analysis: Twitter"
+						text: "PVA: Twitter"
 					},
 					legend:{
 						cursor: "pointer",
@@ -79,7 +106,7 @@
 					exportEnabled: true,
 					animationEnabled: true,
 					title:{
-						text: "Public View Analysis: Reddit"
+						text: "PVA: Reddit"
 					},
 					legend:{
 						cursor: "pointer",
@@ -111,7 +138,7 @@
 					exportEnabled: true,
 					animationEnabled: true,
 					title:{
-						text: "Public View Analysis: Google Plus"
+						text: "PVA: Google Plus"
 					},
 					legend:{
 						cursor: "pointer",
@@ -150,79 +177,196 @@
 	
 	
 	<body>
-		<div id="chartContainerTwitter" style="height: 300px; width: 100%;"></div>
-		<div id="chartContainerReddit" style="height: 300px; width: 100%;"></div>
-		<div id="chartContainerGoogle" style="height: 300px; width: 100%;"></div>
+		<h1>Show page.</h1>
+		<div class="container">
 		
-		<!--TWITTER SCORES-->
-		<p>TWITTER SCORES</p>
-		<p>Total Score: 	 <%=twitterData.totalScore%></p>
-		<p>Positive Score: <%=twitterData.positiveScore%></p>
-		<p>Negative Score: <%=twitterData.negativeScore%></p>
+		<!--CHART-->
+		<div class="row">
+	    <div class="col">
+	    		<div class="card">
+							<div id="chartContainerReddit" style="height: 300px; width: 100%;"></div>
+							<!--Card content-->
+					    <div class="card-body">
+					        <!--Title-->
+					    		<hr>
+					        <h4 class="card-title">Reddit Sentiment Scores</h4>
+					        <!--Text-->
+					        <p class="card-text">
+					        	<!--REDDIT SCORE-->
+										<p>Total Score: 	 <%=redditData.totalScore%></p>
+										<p>Positive Score: <%=redditData.positiveScore%></p>
+										<p>Negative Score: <%=redditData.negativeScore%></p>
+					        </p>
+					        <a href="#" class="btn btn-primary">Show More</a>
+					    </div>
+					</div>
+	    </div>
+	    
+	    <div class="col-5">
+					<div class="card">
+							<!--CHART-->
+							<div id="chartContainerTwitter" style="height: 400px; width: 100%;"></div>
+							<!--Card content-->
+					    <div class="card-body">
+					        <!--Title-->
+					    		<hr>
+					        <h4 class="card-title">Twitter Sentiment Scores</h4>
+					        <!--Text-->
+					        <p class="card-text">
+					        	<!--TWITTER SCORES-->
+										<p>Total Score: 	 <%=twitterData.totalScore%></p>
+										<p>Positive Score: <%=twitterData.positiveScore%></p>
+										<p>Negative Score: <%=twitterData.negativeScore%></p>
+					        </p>
+					        <a href="#" class="btn btn-primary">Show More</a>
+					    </div>
+					</div>
+	    </div>
+	    
+	    <div class="col">
+	    		<div class="card">
+							<div id="chartContainerGoogle" style="height: 300px; width: 100%;"></div>
+							<!--Card content-->
+					    <div class="card-body">
+					        <!--Title-->
+					    		<hr>
+					        <h4 class="card-title">Google+ Sentiment Scores</h4>
+					        <!--Text-->
+					        <p class="card-text">
+										<!--GOOGLE SCORE-->
+										<p>Total Score: 	 <%=googleData.totalScore%></p>
+										<p>Positive Score: <%=googleData.positiveScore%></p>
+										<p>Negative Score: <%=googleData.negativeScore%></p>
+					        </p>
+					        <a href="#" class="btn btn-primary">Show More</a>
+					    </div>
+					</div>
+	    </div>
+	    
+		</div>
+		<!--CHART END-->
 		
-		<!--REDDIT SCORE-->
-		<p>REDDIT SCORE</p>
-		<p>Total Score: 	 <%=redditData.totalScore%></p>
-		<p>Positive Score: <%=redditData.positiveScore%></p>
-		<p>Negative Score: <%=redditData.negativeScore%></p>
 		
-		<!--GOOGLE SCORE-->
-		<p>GOOGLE SCORE</p>
-		<p>Total Score: 	 <%=googleData.totalScore%></p>
-		<p>Positive Score: <%=googleData.positiveScore%></p>
-		<p>Negative Score: <%=googleData.negativeScore%></p>
+
 		
 		
 		<!--SHOW WIKI TEXT-->
-		<p>WIKIPEDIA INFO</p>
+		<p><strong>WIKIPEDIA INFO</strong></p>
 		<p><%=wikiData.wikiText%></p>
 		<hr>
 		
-		<!--SHOW REDDIT POSTS-->
-		<p>REDDIT POSTS</p>
-		<hr>
-		<p>----RELEVENCE----</p>
-		<% for(var i=0; i<redditData.rr_PostsArray.length; i++){ %>
-			<hr>
-			Sentiment Score: <%=redditData.rr_PostsArray[i].sentimentScore%> <br>
-			Reddit Score:    <%=redditData.rr_PostsArray[i].redditScore%> 	 <br>
-			RR Post[<%=i%>]: <%=redditData.rr_PostsArray[i].title%>
-		<% } %>
-		<hr>
-		<p>----NEW----</p>
-		<% for(var i=0; i<redditData.rn_PostsArray.length; i++){ %>
-			<hr>
-			Sentiment Score: <%=redditData.rn_PostsArray[i].sentimentScore%> <br>
-			Reddit Score:    <%=redditData.rn_PostsArray[i].redditScore%>    <br>
-			RN Post[<%=i%>]: <%=redditData.rn_PostsArray[i].title%>
-		<% } %>
 		
 		
-		<!--SHOW GOOGLE ACTIVITIES-->
-		<hr>
-		<p>GOOGLE ACTIVITIES</p>
-		<hr>
-		<% for(var i=0; i<googleData.activitiesArray.length; i++){ %>
-			Sentiment Score: <%=googleData.activitiesArray[i].sentimentScore%> <br>
-			g_Activity[<%=i%>]: <%=googleData.activitiesArray[i].title%>
-			<hr>
-		<% } %>
-		
-		
-		
-		
-		<!--SHOW STATIC TWEETS-->
-		<p>TWEETS</p>
-		<% for(var i=0; i<twitterData.tweetsArray.length; i++){ %>
-			<hr>
-			<p>Tweet[<%=i%>]: <%=twitterData.tweetsArray[i].text%></p>
-		<% } %>
-		
-		
-		<!--SHOW DYNAMIC TWEETS-->
-		<div id="streamTweetsDiv">
-				<!--streamed tweets will be displayed here-->
+		<!--SHOW REDDIT and GOOGLE CONTENT-->
+		<div class="row reddit-google-content">
+			<!--Reddit Relevence Posts-->
+	    <div class="col-4">
+	    	<div class="card redditBOX">
+			    <!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			        <h4 class="card-title">Reddit Relevence Posts</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<% for(var i=0; i<redditData.rr_PostsArray.length; i++){ %>
+									<hr>
+									Sentiment Score: <%=redditData.rr_PostsArray[i].sentimentScore%> <br>
+									Reddit Score:    <%=redditData.rr_PostsArray[i].redditScore%> 	 <br>
+									RR Post[<%=i%>]: <%=redditData.rr_PostsArray[i].title%>
+								<% } %>
+			        </p>
+			    </div>
+				</div>
+	    </div>
+	    
+	    <!--Reddit New Posts-->
+	    <div class="col-4">
+	    	<div class="card redditBOX">
+			    <!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			        <h4 class="card-title">Reddit New Posts</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<% for(var i=0; i<redditData.rn_PostsArray.length; i++){ %>
+									<hr>
+									Sentiment Score: <%=redditData.rn_PostsArray[i].sentimentScore%> <br>
+									Reddit Score:    <%=redditData.rn_PostsArray[i].redditScore%>    <br>
+									RN Post[<%=i%>]: <%=redditData.rn_PostsArray[i].title%>
+								<% } %>
+			        </p>
+			    </div>
+				</div>
+	    </div>
+	    
+	    
+	    <!--SHOW GOOGLE ACTIVITIES-->
+	    <div class="col-4">
+		    <div class="card googleBOX">
+			    <!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			        <h4 class="card-title">Google Activities</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<hr>
+								<% for(var i=0; i<googleData.activitiesArray.length; i++){ %>
+									Sentiment Score: <%=googleData.activitiesArray[i].sentimentScore%> <br>
+									g_Activity[<%=i%>]: <%=googleData.activitiesArray[i].title%>
+									<hr>
+								<% } %>
+			        </p>
+			    </div>
+				</div>
+			</div>
+			
 		</div>
+		
+		<hr>
+		
+		
+		
+		
+		<!--SHOW TWEETS-->
+		<div class="row">
+			
+	    <div class="col">
+	       <div class="card twitterBOX">
+		    	<!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			        <h4 class="card-title">Static Tweets</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<hr>
+								<% for(var i=0; i<twitterData.tweetsArray.length; i++){ %>
+									<hr>
+									<p>Tweet[<%=i%>]: <%=twitterData.tweetsArray[i].text%></p>
+								<% } %>
+			        </p>
+			    </div>
+				</div>
+	    </div>
+	    
+	    <div class="col">
+	      <div class="card twitterBOX">
+		    	<!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			        <h4 class="card-title">Dynamic Tweets</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<hr>
+								<div id="streamTweetsDiv">
+										<!--streamed tweets will be displayed here-->
+								</div>
+			        </p>
+			    </div>
+				</div>
+	    </div>
+	    
+		</div>
+		
 		
 		
 		<a href="/">Go to Home Page.</a>
@@ -253,5 +397,16 @@
 	    });
 	  </script>
 		
+		
+		<!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+    
+    </div> <!--container-->
 	</body>
 </html>

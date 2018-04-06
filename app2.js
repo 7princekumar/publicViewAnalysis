@@ -165,6 +165,7 @@ app.post("/", function(req, res){
     var count = 0;
     var stream = T.stream('statuses/filter', { track: searchString, language: 'en' });
     
+    // START ``````````````````````````````````````````````
     stream.on('tweet', function (tweet) {
       //calculate score for this tweet
       var r5 = sentiment(tweet.text);
@@ -184,6 +185,8 @@ app.post("/", function(req, res){
       //   stream.destroy();
       // }
     });
+    //END```````````````````````````````````````````````
+    
     
     // // Disconnect stream after num_of_secs seconds 
     // var num_of_secs = 20;
@@ -208,7 +211,7 @@ app.post("/", function(req, res){
     var rn_neutralPostCount = 0;
     var rn_totalScore = 0;
     
-    var r_maxPosts = 5; //100 max
+    var r_maxPosts = 20; //100 max
     
     var reddit = {
       search: function(searchTerm, r_maxPosts, sortBy) {
