@@ -44,9 +44,9 @@
 				var twitterChart = new CanvasJS.Chart("chartContainerTwitter", {
 					exportEnabled: true,
 					animationEnabled: true,
-					title:{
-						text: "PVA: Twitter"
-					},
+					// title:{
+					// 	text: "PVA: Twitter"
+					// },
 					legend:{
 						cursor: "pointer",
 						itemclick: explodePie
@@ -105,9 +105,9 @@
 		    var redditChart = new CanvasJS.Chart("chartContainerReddit", {
 					exportEnabled: true,
 					animationEnabled: true,
-					title:{
-						text: "PVA: Reddit"
-					},
+					// title:{
+					// 	text: "PVA: Reddit"
+					// },
 					legend:{
 						cursor: "pointer",
 						itemclick: explodePie
@@ -137,9 +137,9 @@
 		    var googleChart = new CanvasJS.Chart("chartContainerGoogle", {
 					exportEnabled: true,
 					animationEnabled: true,
-					title:{
-						text: "PVA: Google Plus"
-					},
+					// title:{
+					// 	text: "PVA: Google Plus"
+					// },
 					legend:{
 						cursor: "pointer",
 						itemclick: explodePie
@@ -183,13 +183,14 @@
 		<!--CHART-->
 		<div class="row">
 	    <div class="col">
+	    		<h3><strong>Reddit Chart</strong></h3>
 	    		<div class="card">
 							<div id="chartContainerReddit" style="height: 300px; width: 100%;"></div>
 							<!--Card content-->
 					    <div class="card-body">
 					        <!--Title-->
 					    		<hr>
-					        <h4 class="card-title">Reddit Sentiment Scores</h4>
+					        <h4 class="card-title">Sentiment Scores</h4>
 					        <!--Text-->
 					        <p class="card-text">
 					        	<!--REDDIT SCORE-->
@@ -203,34 +204,36 @@
 	    </div>
 	    
 	    <div class="col-5">
-					<div class="card">
-							<!--CHART-->
-							<div id="chartContainerTwitter" style="height: 400px; width: 100%;"></div>
-							<!--Card content-->
-					    <div class="card-body">
-					        <!--Title-->
-					    		<hr>
-					        <h4 class="card-title">Twitter Sentiment Scores</h4>
-					        <!--Text-->
-					        <p class="card-text">
-					        	<!--TWITTER SCORES-->
-										<p>Total Score: 	 <%=twitterData.totalScore%></p>
-										<p>Positive Score: <%=twitterData.positiveScore%></p>
-										<p>Negative Score: <%=twitterData.negativeScore%></p>
-					        </p>
-					        <a href="#" class="btn btn-primary">Show More</a>
-					    </div>
-					</div>
+	    	<h3><strong>Twitter Chart</strong></h3>
+				<div class="card">
+					<!--CHART-->
+					<div id="chartContainerTwitter" style="height: 400px; width: 100%;"></div>
+					<!--Card content-->
+			    <div class="card-body">
+			        <!--Title-->
+			    		<hr>
+			        <h4 class="card-title">Sentiment Scores</h4>
+			        <!--Text-->
+			        <p class="card-text">
+			        	<!--TWITTER SCORES-->
+								<p>Total Score: 	 <%=twitterData.totalScore%></p>
+								<p>Positive Score: <%=twitterData.positiveScore%></p>
+								<p>Negative Score: <%=twitterData.negativeScore%></p>
+			        </p>
+			        <a href="#" class="btn btn-primary">Show More</a>
+			    </div>
+				</div>
 	    </div>
 	    
 	    <div class="col">
+	    	<h3><strong>Google+ Chart</strong></h3>
 	    		<div class="card">
 							<div id="chartContainerGoogle" style="height: 300px; width: 100%;"></div>
 							<!--Card content-->
 					    <div class="card-body">
 					        <!--Title-->
 					    		<hr>
-					        <h4 class="card-title">Google+ Sentiment Scores</h4>
+					        <h4 class="card-title">Sentiment Scores</h4>
 					        <!--Text-->
 					        <p class="card-text">
 										<!--GOOGLE SCORE-->
