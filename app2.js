@@ -18,6 +18,7 @@ var tweetsArray = [];
 var g_ActivitiesArray = [];
 
 var wikiText = '';
+var imgURL = '';
 var googleData = {};
 
 
@@ -43,9 +44,11 @@ if(process.env.GOOGLE_KEY){
 
 
 
+// // OLD WIKI
+// var wikipedia = require("wikipedia-js");
+// var htmlToText = require('html-to-text');
 //WIKI
-var wikipedia = require("wikipedia-js");
-var htmlToText = require('html-to-text');
+const wiki = require('wikijs').default;
 
 
 
@@ -65,6 +68,23 @@ app.set("view engine", "ejs");
 
 // ROUTES
 app.get("/", function(req, res){
+  
+  //NOTE: Only 75 requests per 15 minutes
+  T.get('trends/place', { id: '1' }, function (err, data, response) { //id = 1 for global trends
+    if(err){
+      console.log(err);
+    }
+    
+    //console.log("TRENDS: "+JSON.stringify(data));
+    for(var i=0; i<data[0].trends.length; i++){
+      console.log("TRENDS["+i+"]: "+data[0].trends[i].name);
+      console.log("tweet_volume: "+data[0].trends[i].tweet_volume);
+    }
+    //console.log("TRENDS: "+data[0].trends);
+    //eval(require('locus'));
+  });
+  
+  
    res.render("home");
 });
 
@@ -139,27 +159,27 @@ app.post("/", function(req, res){
       // console.log(data) -> will print the whole tweet json with all attributes.
     }
     T.get('search/tweets', params, gotData);
-    
-    
-  //WIKIPEDIA SCRAPING
-    var query = searchString;
-    // if you want to retrieve a full article set summaryOnly to false. 
-    // Full article retrieval and parsing is still beta 
-    var options = {query: query, format: "html", summaryOnly: true};
-    wikipedia.searchArticle(options, function(err, htmlWikiText){
-      if(err){
-        console.log("An error occurred[query=%s, error=%s]", query, err);
-        return;
-      }
-
-    wikiText = htmlToText.fromString(htmlWikiText, {
-         wordwrap: 130, //no. of words in a line
-         ignoreHref: true // ignore links
-    });
-
-    // console.log(wikiText);
-    });
-    
+  
+  
+  
+    //WIKIPEDIA SCRAPING
+      var query = searchString;
+      // if you want to retrieve a full article set summaryOnly to false. 
+      // Full article retrieval and parsing is still beta 
+         wiki().page(query).then(page => page.summary()).then((data) => {
+      	wikiText = data;
+      });
+  
+     wiki().page(query).then(page => page.mainImage()).then((data) => {
+     	imgURL = data;
+     });
+  
+      //console.log(imgURL);
+  
+  
+  
+  
+  
     
     //CONTINUOUS MORE TWEETS////////////////
     var count = 0;
@@ -181,8 +201,8 @@ app.post("/", function(req, res){
       console.log("----------------------------");
       console.log('RTT['+count+']: '+tweet.text);
       count++;
-      // if(count == 10){
-      //   stream.destroy();
+      // if(count == 10){  //after 10 tweets, it will stop
+      //   stream.stop();
       // }
     });
     //END```````````````````````````````````````````````
@@ -391,6 +411,7 @@ app.post("/", function(req, res){
 
 app.get("/show", function(req, res){
     wikiData.wikiText = wikiText;
+    wikiData.imgURL = imgURL;
     twitterData.tweetsArray = tweetsArray;
     googleData.activitiesArray = g_ActivitiesArray;
     redditData = {
