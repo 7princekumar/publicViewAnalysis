@@ -343,7 +343,7 @@
 			        <!--Text-->
 			        <p class="card-text">
 			        	<hr>
-								<% for(var i=0; i<twitterData.tweetsArray.length; i++){ %>
+								<% for(var i=0; twitterData.tweetsArray && i<twitterData.tweetsArray.length; i++){ %>
 									<hr>
 									<p>Tweet[<%=i%>]: <%=twitterData.tweetsArray[i].text%></p>
 								<% } %>

@@ -11,11 +11,14 @@ var wikiData = {};
 var rr_LocalData = {};
 var rn_LocalData = {};
 var redditData = {};
+var trendsData = {};
 
 var rr_PostsArray = [];
 var rn_PostsArray = [];
 var tweetsArray = [];
 var g_ActivitiesArray = [];
+var trendsArray = [];
+
 
 var wikiText = '';
 var imgURL = '';
@@ -43,10 +46,6 @@ if(process.env.GOOGLE_KEY){
 }
 
 
-
-// // OLD WIKI
-// var wikipedia = require("wikipedia-js");
-// var htmlToText = require('html-to-text');
 //WIKI
 const wiki = require('wikijs').default;
 
@@ -65,28 +64,32 @@ app.set("view engine", "ejs");
 
 
 
-
+var gotTrends = false;
 // ROUTES
 app.get("/", function(req, res){
   
   //NOTE: Only 75 requests per 15 minutes
-  T.get('trends/place', { id: '1' }, function (err, data, response) { //id = 1 for global trends
-    if(err){
-      console.log(err);
-    }
+  if(!gotTrends){
+    T.get('trends/place', { id: '1', exclude: 'hashtags'}, function (err, data, response) { //id = 1 for global trends
+      if(err){
+        console.log(err);
+      }
+      for(var i=0; i<data[0].trends.length; i++){ //max is 50
+        trendsArray.push(data[0].trends[i].name);
+        console.log("TRENDS["+i+"]: "+data[0].trends[i].name);
+      }
+      gotTrends = true;
+    });
     
-    //console.log("TRENDS: "+JSON.stringify(data));
-    for(var i=0; i<data[0].trends.length; i++){
-      console.log("TRENDS["+i+"]: "+data[0].trends[i].name);
-      console.log("tweet_volume: "+data[0].trends[i].tweet_volume);
-    }
-    //console.log("TRENDS: "+data[0].trends);
-    //eval(require('locus'));
-  });
+    trendsData = {
+      trendsArray: trendsArray
+    };
+  }
   
-  
-   res.render("home");
+  res.render("home", {trendsData:trendsData});
 });
+
+
 
 app.post("/", function(req, res){
     //get the string from the html
@@ -120,7 +123,7 @@ app.post("/", function(req, res){
       
       var tweets = data.statuses;
       tweetsArray = tweets;
-      for(var i=0; i<tweets.length; i++){
+      for(var i=0; tweets && i<tweets.length; i++){ ///INTRODUCED NULL CHECK
         var r1 = sentiment(tweets[i].text);
         if(r1.score === 0){
             neutralCount++;
@@ -139,7 +142,8 @@ app.post("/", function(req, res){
         console.log("User Followers: "+tweets[i].user.followers_count);
         console.log("Tweet Language: "+tweets[i].lang);
         console.log("Score: "+r1.score);
-      }
+      }//for loop
+      
       console.log("==============");
       console.log("Positive Score: ["+positiveTweetCount+" tweets]: " +positiveScore);
       console.log("Negative Score: ["+negativeTweetCount+" tweets]: " +negativeScore);
@@ -156,8 +160,7 @@ app.post("/", function(req, res){
         maxTweets:maxTweets
       };
       
-      // console.log(data) -> will print the whole tweet json with all attributes.
-    }
+    }//got data
     T.get('search/tweets', params, gotData);
   
   
@@ -356,7 +359,7 @@ app.post("/", function(req, res){
           console.log("Error in fetching Google Plus Activies!");
         }else{
           console.log("+++++++++GOOGLE Plus Activies++++++++++");  
-          for(var i=0; i<body.items.length; i++){
+          for(var i=0; body.items && i<body.items.length; i++){  ///INTRODUCED NULL CHECK...
             console.log("*****************ACTIVITY CONTENT***********");
             
             var acitivityContent = body.items[i].title + body.items[i].object.content;
@@ -398,7 +401,7 @@ app.post("/", function(req, res){
               maxActivities:         g_ActivitiesCount
             };
           
-          }
+          }//for loop
       }
     });
     

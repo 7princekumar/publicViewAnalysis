@@ -35,53 +35,72 @@
     <h1>Home Page.</h1>
     <div class="container">
       
-      
-      
-      
-      
-      <!--Card-->
-      <div class="card">
-      
-          <!--Card image-->
-          <img class="img-fluid center-cropped" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
-      
-          <!--Card content-->
-          <div class="card-body">
-              <!--Title-->
-              <h4 class="card-title">Public View Analysis</h4>
-              <!--Text-->
-              <p class="card-text">
-                A complete real-time analysis of public opinions (via Twitter, Reddit and Google+) over any topic instantly.
-              </p>
+    
+      <!--RADIO BUTTONS-->
+      <div class="row">
+          <div class="col-3">
+             
+             Login Form Here.
+             
+          </div>
+          
+          
+          <div class="col">
               
-              <form action="/" method="post">
-                <div class='inputDIV'>
-                    <label for="searchString">Name</label> <br>
-                    <input type="text" class="form-control" name="searchString" id="searchString" placeholder="search">
-                </div>
-                <!--<div class='inputDIV'>-->
-                <!--    <label for="minFollowersCount">Minimum Followers Count</label> <br>-->
-                <!--    <input type="number" -->
-                <!--           class="form-control"-->
-                <!--           name="minFollowersCount" -->
-                <!--           id="minFollowersCount" -->
-                <!--           placeholder="min followers" -->
-                <!--           min="0">-->
-                <!--</div>-->
-                <div class='inputDIV'>
-                    <label for="maxTweets">Maximum No Of Tweets</label> <br>
-                    <input type="number" class="form-control" name="maxTweets" id="maxTweets" placeholder="max tweets count">
-                </div>
-                <button class="btn btn-primary ">Submit</button>
-              </form>
+              <!--Card-->
+              <div class="card">
+                
+                  <!--Card image-->
+                  <img class="img-fluid center-cropped" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">
+              
+                  <!--Card content-->
+                  <div class="card-body">
+                      <!--Title-->
+                      <h4 class="card-title">Public View Analysis</h4>
+                      <!--Text-->
+                      <p class="card-text">
+                        A complete real-time analysis of public opinions (via Twitter, Reddit and Google+) over any topic instantly.
+                      </p>
+                      
+                      <!--FORM-->
+                      <form action="/" method="post">
+                        <div class='inputDIV'>
+                            <label for="searchString">Name</label> <br>
+                            <input type="text" class="form-control" name="searchString" id="searchString" placeholder="search">
+                        </div>
+                        
+                        
+                        <!--SHOW TRENDING TOPICS-->
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect01">Trending Topics</label>
+                          </div>
+                          <select name="searchString" class="custom-select" id="inputGroupSelect01">
+                            <option selected>Choose...</option>
+                            <% for(var i=0; i<trendsData.trendsArray.length && i<12 ; i++){ %>
+                                <option value=<%= trendsData.trendsArray[i] %>><%= trendsData.trendsArray[i] %></option>
+                            <% } %>
+                          </select>
+                        </div>
+                
+                        
+                        <div class='inputDIV'>
+                            <label for="maxTweets">Maximum No Of Tweets</label> <br>
+                            <input type="number" class="form-control" name="maxTweets" id="maxTweets" placeholder="max tweets count">
+                        </div>
+                        <button class="btn btn-primary ">Submit</button>
+                      </form>
+                      <!--FORM END-->
+        
+                  </div>
+              </div>
+              <!--/.Card-->
               
               
               
           </div>
-      
       </div>
-      <!--/.Card-->
-      
+
       
       
       
