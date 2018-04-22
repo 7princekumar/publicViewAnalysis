@@ -50,6 +50,10 @@ if(process.env.GOOGLE_KEY){
 const wiki = require('wikijs').default;
 
 
+//CLOUD VISION
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient();
+
 
 //TWIT
 var Twit = require("twit");
@@ -176,7 +180,7 @@ app.post("/", function(req, res){
         neutralCount: neutralCount,
         maxTweets:maxTweets
       };
-      refreshFlag = true;
+      //refreshFlag = true;
     }//got data
     T.get('search/tweets', params, gotData);
   
@@ -449,6 +453,7 @@ app.get("/show", function(req, res){
         googleData:  googleData
       });
     }else{
+      refreshFlag = true;
       res.redirect("/show");
     }
     

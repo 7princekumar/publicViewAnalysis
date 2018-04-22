@@ -63,11 +63,31 @@
                       </p>
                       
                       <!--FORM-->
-                      <form action="/" method="post">
+                      <form action="/" enctype="multipart/form-data" method="post">
                         <div class='inputDIV'>
                             <label for="searchString">Name</label> <br>
                             <input type="text" class="form-control" name="searchString" id="searchString" placeholder="search">
                         </div>
+                        
+                        <!--image-->
+                        <div class = 'imageDIV'>
+                          <input type = "file" name="image" id="image">
+                        </div>
+                        
+                        <form class="md-form">
+                            <div class="file-field">
+                                <div class="btn btn-primary btn-sm float-left">
+                                    <span>Choose file</span>
+                                    <input type="file">
+                                </div>
+                                <div class="file-path-wrapper">
+                                   <input class="file-path validate" type="text" placeholder="Upload your file">
+                                </div>
+                            </div>
+                        </form>
+                        
+                        
+                        
                         
                         
                         <!--SHOW TRENDING TOPICS-->
