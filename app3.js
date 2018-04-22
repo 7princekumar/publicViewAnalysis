@@ -47,6 +47,13 @@ if(process.env.GOOGLE_KEY){
 } else {
   console.log("Google Key is missing.");
 }
+if(process.env.GOOGLE_APPLICATION_CREDENTIAL){
+  console.log("Google Cloud Vision Key is present.");
+}else{
+  console.log("Google Cloud Vision Key is missing.");
+}
+
+
 
 //CLOUD VISION
 const vision = require('@google-cloud/vision');
@@ -98,20 +105,16 @@ app.get("/", function(req, res){
   if(gotTrends){
     res.render("home", {trendsData:trendsData});
   }else{
-    //gotTrends = true;
+    gotTrends = true;
     res.redirect("/");
   }
 });
 
-// app.post("/upload",upload.single('image'),function(req,res){
 
-//   var image=req.files.file.path;
-//   console.log(image);
-// });
+
+
 
 var refreshFlag = false;
-
-
 app.post("/",upload.single('image'),function(req, res){
     //get the string from the html
     var searchStringArray = req.body.searchString;
@@ -203,7 +206,6 @@ app.post("/",upload.single('image'),function(req, res){
          });
       
           //console.log(imgURL);
-      
       
       
       
@@ -429,50 +431,47 @@ app.post("/",upload.single('image'),function(req, res){
               }//for loop
           }
         });
-        
-       
-        
-        res.redirect("/show");
-  }
+      
+  }; //function end
 
-  if(searchStringArray[0]=='' && searchStringArray[1]=='Choose...')
-  {
-    var image = req.file.path;
-    var searchString='';
-    client
-    .webDetection(image)
-    .then(results => {
-      const webDetection = results[0].webDetection;
-      // console.log(labels);
-      if (webDetection.bestGuessLabels.length) {
-          // console.log(
-          //   `Best guess labels found: ${webDetection.bestGuessLabels.length}`
-          // );
-          webDetection.bestGuessLabels.forEach(label => {
-            console.log(`  Label: ${label.label}`);
-            searchString = label.label;
-            calculateSentiment(searchString);
-          });
-    }
-    })
-    .catch(err => {
-      console.error('ERROR:', err);
-    })
+  if(searchStringArray[0]=='' && searchStringArray[1]==''){
+      var image = req.file.path;
+      var searchString='';
+      client
+      .webDetection(image)
+      .then(results => {
+        const webDetection = results[0].webDetection;
+        // console.log(labels);
+        if (webDetection.bestGuessLabels.length) {
+            // console.log(
+            //   `Best guess labels found: ${webDetection.bestGuessLabels.length}`
+            // );
+            webDetection.bestGuessLabels.forEach(label => {
+              console.log(`  Label: ${label.label}`);
+              searchString = label.label;
+              calculateSentiment(searchString);
+            });
+      }
+      })
+      .catch(err => {
+        console.error('ERROR:', err);
+      });
+  } else {
+      var searchString='';
+      console.log("JSON: "+JSON.stringify(req.body));
+      if(searchStringArray[0] == '' && searchStringArray[1]==''){
+        searchString = 'DEADPOOL';
+      }else if(searchStringArray[0] == ''){
+        searchString = searchStringArray[1];
+      }else{
+        searchString = searchStringArray[0]; 
+      }
+      
+      wikiData.searchString = searchString;
+      calculateSentiment(searchString);
   }
-else {
-  var searchString='';
-  console.log("JSON: "+JSON.stringify(req.body));
-  if(searchStringArray[0] == '' && searchStringArray[1]==''){
-    searchString = 'DEADPOOL'
-  }else if(searchStringArray[1] == 'Choose...'){
-    searchString = searchStringArray[0];
-  }else{
-    searchString = searchStringArray[1]; //default
-  }
-  calculateSentiment(searchString);
-}
-
-
+  
+  res.redirect("/show");
 
 });
 
@@ -480,6 +479,7 @@ else {
 
 app.get("/show", function(req, res){
     wikiData.wikiText = wikiText;
+    console.log("WIKI: "+JSON.stringify(wikiData.searchString));
     wikiData.imgURL = imgURL;
     twitterData.tweetsArray = tweetsArray;
     googleData.activitiesArray = g_ActivitiesArray;

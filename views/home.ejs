@@ -27,6 +27,12 @@
         margin-bottom: 0;
       }
       
+      .GCV {
+        margin: 5.5;
+        margin-right: 0;
+        margin-left: 0;
+      }
+      
     </style>
 
   </head>
@@ -64,50 +70,60 @@
                       
                       <!--FORM-->
                       <form action="/" enctype="multipart/form-data" method="post">
+                        
+                        <!--enter string-->
                         <div class='inputDIV'>
                             <label for="searchString">Name</label> <br>
                             <input type="text" class="form-control" name="searchString" id="searchString" placeholder="search">
+                          
                         </div>
-                        
-                        <!--image-->
-                        <div class = 'imageDIV'>
-                          <input type = "file" name="image" id="image">
-                        </div>
-                        
-                        <form class="md-form">
-                            <div class="file-field">
-                                <div class="btn btn-primary btn-sm float-left">
-                                    <span>Choose file</span>
-                                    <input type="file">
-                                </div>
-                                <div class="file-path-wrapper">
-                                   <input class="file-path validate" type="text" placeholder="Upload your file">
-                                </div>
-                            </div>
-                        </form>
-                        
-                        
-                        
-                        
+
                         
                         <!--SHOW TRENDING TOPICS-->
                         <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <label class="input-group-text" for="inputGroupSelect01">Trending Topics</label>
-                          </div>
-                          <select name="searchString" class="custom-select" id="inputGroupSelect01">
-                            <option  value=''>Choose...</option>
-                            <% for(var i=0; trendsData.trendsArray && i<trendsData.trendsArray.length; i++){ %>
-                                <option value=<%=trendsData.trendsArray[i]%> ><%= trendsData.trendsArray[i] %></option>
-                            <% } %>
-                          </select>
+                            <div class="input-group-prepend">
+                              <label class="input-group-text" for="inputGroupSelect01">Trending Topics</label>
+                            </div>
+                            <select name="searchString" class="custom-select" id="inputGroupSelect01">
+                              <option  value=''>Choose...</option>
+                              <% for(var i=0; trendsData.trendsArray && i<trendsData.trendsArray.length; i++){ %>
+                                  <option value=<%=trendsData.trendsArray[i]%> ><%= trendsData.trendsArray[i] %></option>
+                              <% } %>
+                            </select>
+                             
+                             <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text GCV">
+                                    Upload Image 
+                                  </span>
+                                  
+                                </div>
+                                
+                                <div class="btn btn-dark btn-sm float-left">
+                                      <input  type="file" name="image" id="image">
+                                </div>
+                              </div>
+                            
+                            
                         </div>
                 
+                        
+                        
+
+                
+                        <!--image-->
+                        <!--<div class="file-field imageDIV">-->
+                            
+                        <!--</div>-->
+                      
+
                         
                         <div class='inputDIV'>
                             <label for="maxTweets">Maximum No Of Tweets</label> <br>
                             <input type="number" class="form-control" name="maxTweets" id="maxTweets" placeholder="max tweets count">
                         </div>
+                        
+                        
                         <button class="btn btn-primary ">Submit</button>
                       </form>
                       <!--FORM END-->
