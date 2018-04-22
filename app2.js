@@ -63,13 +63,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 
-
-var gotTrends = false;
+var refreshFlag = false;
+var gotTrendsFlag = false; //so it doesn't fetch the trends each time user reloads the page
 // ROUTES
 app.get("/", function(req, res){
   
   //NOTE: Only 75 requests per 15 minutes
-  if(!gotTrends){
+  if(!gotTrendsFlag){
     T.get('trends/place', { id: '1', exclude: 'hashtags'}, function (err, data, response) { //id = 1 for global trends
       if(err){
         console.log(err);
@@ -78,23 +78,40 @@ app.get("/", function(req, res){
         trendsArray.push(data[0].trends[i].name);
         console.log("TRENDS["+i+"]: "+data[0].trends[i].name);
       }
-      gotTrends = true;
+      gotTrendsFlag = true;
+      
+      trendsData = {
+        trendsArray: trendsArray
+      };
     });
     
-    trendsData = {
-      trendsArray: trendsArray
-    };
   }
   
-  res.render("home", {trendsData:trendsData});
+  console.log(JSON.stringify(trendsData));
+  if(gotTrendsFlag){
+    res.render("home", {trendsData:trendsData});
+  }else{
+    res.redirect("/");
+  }
 });
 
 
 
 app.post("/", function(req, res){
     //get the string from the html
-    var searchString = req.body.searchString;
+    var searchString = '';
+    var searchStringArray = req.body.searchString;
+    
+    console.log("JSON: "+JSON.stringify(req.body));
+    if(searchStringArray[0] == ''){
+      searchString = searchStringArray[1];
+    }else if(searchStringArray[1] == ''){
+      searchString = searchStringArray[0];
+    }else{
+      searchString = 'PIKACHU'; //default
+    }
     console.log("Search: "+searchString);
+   
    
     //var tweetsCount = 0;
     var totalScore  = 0;
@@ -135,7 +152,6 @@ app.post("/", function(req, res){
             negativeScore += r1.score;
         }
         totalScore = totalScore + r1.score;
-        
         
         console.log("---------------------");
         console.log("Tweet["+i+"]: "+tweets[i].text);
@@ -390,7 +406,6 @@ app.post("/", function(req, res){
             }
             // console.log("Content: "+body.items[i].object.content);
             
-            
             googleData = {
               totalScore:            g_totalScore,
               positiveScore:         g_positiveScore,
@@ -400,7 +415,6 @@ app.post("/", function(req, res){
               neutralActivityCount:  g_neutralActivityCount,
               maxActivities:         g_ActivitiesCount
             };
-          
           }//for loop
       }
     });

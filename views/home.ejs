@@ -36,7 +36,7 @@
     <div class="container">
       
     
-      <!--RADIO BUTTONS-->
+      <!--EMPTY AREA - for login form and all-->
       <div class="row">
           <div class="col-3">
              
@@ -76,9 +76,9 @@
                             <label class="input-group-text" for="inputGroupSelect01">Trending Topics</label>
                           </div>
                           <select name="searchString" class="custom-select" id="inputGroupSelect01">
-                            <option selected>Choose...</option>
-                            <% for(var i=0; i<trendsData.trendsArray.length && i<12 ; i++){ %>
-                                <option value=<%= trendsData.trendsArray[i] %>><%= trendsData.trendsArray[i] %></option>
+                            <option >Choose...</option>
+                            <% for(var i=0; trendsData.trendsArray && i<trendsData.trendsArray.length; i++){ %>
+                                <option value=<%=trendsData.trendsArray[i]%> ><%= trendsData.trendsArray[i] %></option>
                             <% } %>
                           </select>
                         </div>
