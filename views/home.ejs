@@ -76,7 +76,7 @@
                             <label class="input-group-text" for="inputGroupSelect01">Trending Topics</label>
                           </div>
                           <select name="searchString" class="custom-select" id="inputGroupSelect01">
-                            <option >Choose...</option>
+                            <option  value=''>Choose...</option>
                             <% for(var i=0; trendsData.trendsArray && i<trendsData.trendsArray.length; i++){ %>
                                 <option value=<%=trendsData.trendsArray[i]%> ><%= trendsData.trendsArray[i] %></option>
                             <% } %>

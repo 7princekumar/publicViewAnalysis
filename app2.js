@@ -63,7 +63,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 
-var refreshFlag = false;
+
 var gotTrendsFlag = false; //so it doesn't fetch the trends each time user reloads the page
 // ROUTES
 app.get("/", function(req, res){
@@ -91,11 +91,12 @@ app.get("/", function(req, res){
   if(gotTrendsFlag){
     res.render("home", {trendsData:trendsData});
   }else{
+    //gotTrendsFlag = true;
     res.redirect("/");
   }
 });
 
-
+var refreshFlag = false;
 
 app.post("/", function(req, res){
     //get the string from the html
@@ -103,12 +104,12 @@ app.post("/", function(req, res){
     var searchStringArray = req.body.searchString;
     
     console.log("JSON: "+JSON.stringify(req.body));
-    if(searchStringArray[0] == ''){
+    if(searchStringArray[0] == '' && searchStringArray[1] == ''){
+      searchString = "Pikachu";
+    }else if(searchStringArray[0] == ''){
       searchString = searchStringArray[1];
-    }else if(searchStringArray[1] == ''){
-      searchString = searchStringArray[0];
     }else{
-      searchString = 'PIKACHU'; //default
+      searchString = searchStringArray[0];
     }
     console.log("Search: "+searchString);
    
@@ -175,7 +176,7 @@ app.post("/", function(req, res){
         neutralCount: neutralCount,
         maxTweets:maxTweets
       };
-      
+      refreshFlag = true;
     }//got data
     T.get('search/tweets', params, gotData);
   
@@ -192,11 +193,7 @@ app.post("/", function(req, res){
      wiki().page(query).then(page => page.mainImage()).then((data) => {
      	imgURL = data;
      });
-  
-      //console.log(imgURL);
-  
-  
-  
+
   
   
     
@@ -306,7 +303,7 @@ app.post("/", function(req, res){
           neutralPostCount:  rr_neutralPostCount,
           maxPosts:          r_maxPosts
         };
-      
+        refreshFlag = true;
       }
     });
     
@@ -416,6 +413,7 @@ app.post("/", function(req, res){
               maxActivities:         g_ActivitiesCount
             };
           }//for loop
+          refreshFlag = true;
       }
     });
     
@@ -443,12 +441,17 @@ app.get("/show", function(req, res){
       rn_PostsArray:     rn_PostsArray
     };
     
-    res.render("show", {
-      twitterData: twitterData, 
-      wikiData:    wikiData, 
-      redditData:  redditData,
-      googleData:  googleData
-    });
+    if(refreshFlag){
+      res.render("show", {
+        twitterData: twitterData, 
+        wikiData:    wikiData, 
+        redditData:  redditData,
+        googleData:  googleData
+      });
+    }else{
+      res.redirect("/show");
+    }
+    
 });
 
 
