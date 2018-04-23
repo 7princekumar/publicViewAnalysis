@@ -51,7 +51,6 @@ if(process.env.GOOGLE_KEY){
 
 //CLOUD VISION
 const vision = require('@google-cloud/vision');
-// Creates a client
 const client = new vision.ImageAnnotatorClient();
 
 
