@@ -47,12 +47,6 @@ if(process.env.GOOGLE_KEY){
 } else {
   console.log("Google Key is missing.");
 }
-if(process.env.GOOGLE_APPLICATION_CREDENTIAL){
-  console.log("Google Cloud Vision Key is present.");
-}else{
-  console.log("Google Cloud Vision Key is missing.");
-}
-
 
 
 //CLOUD VISION
@@ -449,6 +443,7 @@ app.post("/",upload.single('image'),function(req, res){
             webDetection.bestGuessLabels.forEach(label => {
               console.log(`  Label: ${label.label}`);
               searchString = label.label;
+              wikiData.searchString = searchString;
               calculateSentiment(searchString);
             });
       }

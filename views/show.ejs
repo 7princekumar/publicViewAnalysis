@@ -27,6 +27,9 @@
     		background-color: #BBDEFB;
     	}
     	
+    	#wikiTitle {
+    		text-transform:capitalize;
+    	}
     </style>
 		
 		
@@ -254,7 +257,7 @@
 		
 		
 		<!--SHOW WIKI TEXT-->
-		<p><strong>WIKIPEDIA INFO: <%=wikiData.searchString%></strong></p>
+		<p id="wikiTitle"><strong>WIKIPEDIA INFO: <%=wikiData.searchString%></strong></p>
 		<p><%=wikiData.wikiText%></p>
 		<img src = <%=wikiData.imgURL%> width="100" height="100">
 		<hr>
